@@ -2,6 +2,9 @@ import os
 from box.exceptions import BoxValueError
 import yaml
 from textSummarizer.logging import logger
+import unittest
+if hasattr(unittest, 'TestCase') and not hasattr(unittest.TestCase, 'assertRaisesRegexp'):
+    unittest.TestCase.assertRaisesRegexp = unittest.TestCase.assertRaisesRegex
 from ensure import ensure_annotations
 from box import ConfigBox
 from pathlib import Path
