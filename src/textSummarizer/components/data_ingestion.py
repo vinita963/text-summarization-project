@@ -9,12 +9,10 @@ class DataIngestion:
         self.config = config
 
     def download_file(self):
-        if not os.path.exists(self.config.local_data_file):
-            filename, headers = request.urlretrieve(
-                url = self.config.source_URL,
-                filename = self.config.local_data_file
-            )
-            logger.info(f"{filename} download! with following info: \n{headers}")
+        if not os.path.exists(self.config.local_data_file) or os.path.getsize(self.config.local_data_file) == 0:
+            logger.info("Downloading file using curl...")
+            os.system(f"curl -L -o {self.config.local_data_file} {self.config.source_URL}")
+            logger.info(f"{self.config.local_data_file} downloaded successfully!")
         else:
             logger.info(f"File already exists")  
 
