@@ -65,7 +65,7 @@ class ModelTrainer:
             fp16=self.config.fp16,
             logging_steps=10,
             dataset_text_field="text",
-            max_seq_length=512
+            max_length=512
         )
         
         logger.info("Initializing SFTTrainer (Supervised Fine-Tuning)...")
