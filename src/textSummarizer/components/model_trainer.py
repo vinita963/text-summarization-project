@@ -62,10 +62,13 @@ class ModelTrainer:
             learning_rate=self.config.learning_rate,
             weight_decay=self.config.weight_decay,
             save_total_limit=self.config.save_total_limit,
-            fp16=self.config.fp16,
+            #fp16=self.config.fp16,
+            fp16=not torch.cuda.is_bf16_supported(),   # use fp16 only if bf16 not supported
+            bf16=torch.cuda.is_bf16_supported(),        # use bf16 if supported (no scaler needed)
             logging_steps=10,
             dataset_text_field="text",
-            max_length=512
+            max_length=512,
+            max_steps=10
         )
         
         logger.info("Initializing SFTTrainer (Supervised Fine-Tuning)...")
