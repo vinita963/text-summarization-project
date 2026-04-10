@@ -2,7 +2,7 @@ import os
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, BitsAndBytesConfig
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from trl import SFTTrainer
+from trl import SFTTrainer, SFTConfig
 from datasets import load_from_disk
 from textSummarizer.logging import logger
 from textSummarizer.entity.config_entity import ModelTrainerConfig
@@ -52,8 +52,8 @@ class ModelTrainer:
         model = get_peft_model(model, lora_config)
         logger.info("Loaded LoRA Config and applied to model.")
         
-        # 5. Training Arguments
-        training_args = TrainingArguments(
+        # 5. Training Arguments via SFTConfig for trl>=1.0.0
+        training_args = SFTConfig(
             output_dir=self.config.output_dir,
             num_train_epochs=self.config.num_train_epochs,
             per_device_train_batch_size=self.config.per_device_train_batch_size,
@@ -63,7 +63,9 @@ class ModelTrainer:
             weight_decay=self.config.weight_decay,
             save_total_limit=self.config.save_total_limit,
             fp16=self.config.fp16,
-            logging_steps=10
+            logging_steps=10,
+            dataset_text_field="text",
+            max_seq_length=512
         )
         
         logger.info("Initializing SFTTrainer (Supervised Fine-Tuning)...")
@@ -72,8 +74,6 @@ class ModelTrainer:
             model=model,
             train_dataset=dataset["train"],
             eval_dataset=dataset["validation"],
-            dataset_text_field="text",
-            max_seq_length=512,
             tokenizer=tokenizer,
             args=training_args,
         )
