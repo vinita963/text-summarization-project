@@ -10,9 +10,14 @@ class DataIngestion:
 
     def download_file(self):
         if not os.path.exists(self.config.local_data_file) or not zipfile.is_zipfile(self.config.local_data_file):
-            logger.info("Downloading file using curl...")
-            os.system(f"curl -L -o {self.config.local_data_file} {self.config.source_URL}")
-            logger.info(f"{self.config.local_data_file} downloaded successfully!")
+            if os.path.exists(self.config.local_data_file):
+                os.remove(self.config.local_data_file)
+            logger.info(f"Downloading file from {self.config.source_URL} ...")
+            filename, headers = request.urlretrieve(
+                url=self.config.source_URL,
+                filename=self.config.local_data_file
+            )
+            logger.info(f"{filename} downloaded successfully!")
         else:
             logger.info(f"File already exists and is a valid zip file")  
 
