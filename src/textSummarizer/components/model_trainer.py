@@ -45,7 +45,8 @@ class ModelTrainer:
             lora_alpha=self.config.lora_alpha,
             lora_dropout=self.config.lora_dropout,
             bias=self.config.bias,
-            task_type=self.config.task_type
+            task_type=self.config.task_type,
+            target_modules="all-linear"
         )
         
         model = get_peft_model(model, lora_config)
