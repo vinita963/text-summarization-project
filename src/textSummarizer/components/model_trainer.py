@@ -74,7 +74,7 @@ class ModelTrainer:
             model=model,
             train_dataset=dataset["train"],
             eval_dataset=dataset["validation"],
-            tokenizer=tokenizer,
+            processing_class=tokenizer,
             args=training_args,
         )
         
